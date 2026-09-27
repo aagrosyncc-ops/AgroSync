@@ -1,0 +1,161 @@
+.mensagemEstado {
+  padding: 24px;
+  color: var(--cor-cinza-01);
+  font-size: var(--tamanho-15px);
+  background: var(--cor-branco-01);
+  border-radius: 12px;
+}
+
+.conteinerGrade {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .conteinerGrade {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .conteinerGrade {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cartao {
+  background: var(--cor-branco-01);
+  border-radius: 14px;
+  padding: 26px;
+  border-left: 4px solid var(--cor-verde-01);
+  box-shadow: 0 1px 3px var(--cor-overlay-01);
+}
+
+.cabecalhoCartao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.icone {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cor-branco-01);
+  font-weight: bold;
+  font-size: var(--tamanho-20px);
+}
+
+.icNitrogenio {
+  background: var(--cor-verde-01);
+}
+.icFosforo {
+  background: var(--cor-roxo-claro-01);
+}
+.icPotassio {
+  background: var(--cor-laranja-01);
+}
+.icTemperatura {
+  background: var(--cor-vermelho-01);
+}
+.icUmidade {
+  background: var(--cor-azul-01);
+}
+.icPh {
+  background: var(--cor-ciano-01);
+}
+.icCondutividade {
+  background: var(--cor-azul-claro-03);
+}
+.icLuminosidade {
+  background: var(--cor-amarelo-01);
+}
+
+.situacao {
+  font-size: var(--raio-borda);
+  font-weight: 600;
+  color: var(--cor-verde-02);
+  background: var(--cor-verde-claro-01);
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+.rotulo {
+  font-size: var(--tamanho-15px);
+  color: var(--cor-cinza-01);
+  margin: 0 0 8px 0;
+}
+
+.valor {
+  font-size: var(--tamanho-32px);
+  font-weight: 700;
+  color: var(--cor-cinza-escuro-01);
+  margin: 0 0 18px 0;
+}
+
+.unidade {
+  font-size: var(--tamanho-15px);
+  font-weight: 400;
+  color: var(--cor-cinza-02);
+}
+
+.barraFundo {
+  width: 100%;
+  height: 6px;
+  background: var(--cor-branco-02);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.barraPreenchida {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.corNitrogenio {
+  background: var(--cor-verde-01);
+}
+.corFosforo {
+  background: var(--cor-roxo-claro-01);
+}
+.corPotassio {
+  background: var(--cor-laranja-01);
+}
+.corTemperatura {
+  background: var(--cor-vermelho-01);
+}
+.corUmidade {
+  background: var(--cor-azul-01);
+}
+.corPh {
+  background: var(--cor-ciano-01);
+}
+.corCondutividade {
+  background: var(--cor-azul-claro-03);
+}
+.corLuminosidade {
+  background: var(--cor-amarelo-01);
+}
+
+.limites {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--raio-borda);
+  color: var(--cor-cinza-03);
+  margin-bottom: 14px;
+}
+
+.faixaIdeal {
+  font-size: var(--raio-borda);
+  color: var(--cor-cinza-03);
+  border-top: 1px solid var(--cor-branco-03);
+  padding-top: 12px;
+  margin: 0;
+}

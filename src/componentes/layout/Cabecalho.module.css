@@ -1,0 +1,65 @@
+.cabecalho {
+  background-color: var(--cor-primaria);
+  padding: 0 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--sombra-card);
+}
+
+.conteiner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--cor-texto-claro);
+  font-size: var(--tamanho-grande);
+  font-weight: 700;
+}
+
+.logoIcone {
+  font-size: var(--tamanho-2rem);
+  color: var(--cor-terciaria);
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  color: var(--cor-texto-claro);
+  border-radius: var(--raio-borda);
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.link:hover {
+  background-color: var(--cor-overlay-08);
+}
+
+.link.ativo {
+  background-color: var(--cor-overlay-02);
+}
+
+.botaoLogin {
+  margin-left: 8px;
+  border: 2px solid var(--cor-terciaria);
+}
+
+.botaoLogin:hover {
+  background-color: var(--cor-terciaria);
+}

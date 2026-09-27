@@ -1,0 +1,120 @@
+.conteiner {
+  padding: 32px;
+  background: var(--cor-branco-06);
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.mensagemEstado {
+  padding: 24px;
+  color: var(--cor-cinza-01);
+  font-size: var(--tamanho-15px);
+}
+
+.titulo {
+  font-size: var(--tamanho-28px);
+  font-weight: 700;
+  color: var(--cor-cinza-escuro-01);
+  margin: 0 0 4px 0;
+}
+
+.subtitulo {
+  font-size: var(--tamanho-14px);
+  color: var(--cor-cinza-01);
+  margin: 0 0 24px 0;
+}
+
+.cartao {
+  background: var(--cor-branco-01);
+  border-radius: 14px;
+  padding: 26px;
+  box-shadow: 0 1px 3px var(--cor-overlay-01);
+  margin-bottom: 20px;
+  max-width: 700px;
+}
+
+.tituloCartao {
+  font-size: var(--tamanho-17px);
+  font-weight: 700;
+  color: var(--cor-cinza-escuro-01);
+  margin: 0 0 14px 0;
+}
+
+.linha {
+  border: none;
+  border-top: 1px solid var(--cor-branco-02);
+  margin: 0 0 20px 0;
+}
+
+.linhaConfig {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--cor-branco-08);
+}
+
+.linhaConfig:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.rotulo {
+  font-size: var(--tamanho-14px);
+  font-weight: 600;
+  color: var(--cor-cinza-escuro-02);
+  margin: 0 0 4px 0;
+}
+
+.descricao {
+  font-size: var(--tamanho-13px);
+  color: var(--cor-cinza-02);
+  margin: 0;
+}
+
+.selecao {
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: var(--tamanho-14px);
+  color: var(--cor-cinza-escuro-03);
+  background: var(--cor-branco-01);
+  min-width: 160px;
+}
+
+.alternador,
+.alternadorAtivo {
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease;
+}
+
+.alternador {
+  background: var(--cor-azul-claro-02);
+}
+
+.alternadorAtivo {
+  background: var(--cor-verde-01);
+}
+
+.indicadorAlternador {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--cor-branco-01);
+  transition: transform 0.2s ease;
+}
+
+.alternadorAtivo .indicadorAlternador {
+  transform: translateX(20px);
+}

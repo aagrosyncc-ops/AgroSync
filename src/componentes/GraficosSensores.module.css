@@ -1,0 +1,33 @@
+.mensagemEstado {
+  padding: 24px;
+  color: var(--cor-cinza-01);
+  font-size: var(--tamanho-15px);
+  background: var(--cor-branco-01);
+  border-radius: 12px;
+}
+
+.conteinerGrade {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .conteinerGrade {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cartao {
+  background: var(--cor-branco-01);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px var(--cor-overlay-01);
+}
+
+.titulo {
+  font-size: var(--tamanho-15px);
+  font-weight: 600;
+  color: var(--cor-cinza-escuro-02);
+  margin: 0 0 12px 0;
+}

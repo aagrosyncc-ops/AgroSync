@@ -1,0 +1,36 @@
+.seletor {
+  display: flex;
+  gap: 8px;
+  background: var(--cor-branco-01);
+  padding: 4px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px var(--cor-overlay-01);
+  width: fit-content;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.botao,
+.botaoAtivo {
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: var(--tamanho-13px);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.botao {
+  background: transparent;
+  color: var(--cor-cinza-01);
+}
+
+.botao:hover {
+  background: var(--cor-branco-06);
+}
+
+.botaoAtivo {
+  background: var(--cor-verde-escuro-01);
+  color: var(--cor-branco-01);
+}

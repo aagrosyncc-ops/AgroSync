@@ -1,0 +1,169 @@
+.sobreposicao,
+.sobreposicaoVisivel {
+  display: none !important;
+}
+
+.menuLateral {
+  width: 300px;
+  left: 0;
+  top: 0;
+  z-index: 1001;
+  position: fixed;
+  transform: translateX(0%) !important;
+  background-color: var(--cor-branco-01);
+
+  height: 100vh;
+  min-height: 580px;
+}
+
+.menuLateralAberto {
+  transform: translateX(0%);
+}
+
+.alternador {
+  display: none !important;
+}
+
+.botaoMenu {
+  display: none !important;
+}
+
+.conteudoMenu {
+  display: flex;
+  flex-direction: column;
+  padding: 30px 0;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.perfil {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--cor-branco-04);
+}
+
+.profileImg {
+  width: 80px;
+  display: block;
+  margin: 0 auto 20px auto;
+  border-radius: 50%;
+}
+
+.nomePerfil {
+  font-size: var(--tamanho-18px);
+  margin-bottom: 0;
+  font-family: 'Roboto', sans-serif;
+  color: var(--cor-cinza-escuro-03);
+}
+
+.identificacaoPerfil {
+  font-size: var(--tamanho-14px);
+  color: var(--cor-cinza-claro-01);
+}
+
+.counter {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--cor-branco-04);
+}
+
+.counterCol {
+  flex: 1;
+}
+
+.number {
+  display: block;
+  font-size: var(--tamanho-20px);
+  color: var(--cor-preto-01);
+}
+
+.numberLabel {
+  font-size: var(--tamanho-14px);
+  color: var(--cor-cinza-claro-01);
+}
+
+.menuNavegacao ul,
+.menuNavegacao ul li,
+.menuRodape ul,
+.menuRodape ul li {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.menuNavegacao ul li a,
+.menuRodape ul li :is(a, button) {
+  display: block;
+  padding: 20px 30px;
+  color: var(--cor-cinza-04);
+  position: relative;
+  text-decoration: none;
+  transition: 0.3s padding-left ease;
+}
+
+.menuNavegacao ul li a::before,
+.menuRodape ul li :is(a, button)::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  background-color: var(--cor-laranja-04);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    0.3s opacity ease,
+    0.3s visibility ease,
+    0.3s width ease;
+}
+
+.menuNavegacao ul li a:active,
+.menuNavegacao ul li a:focus,
+.menuRodape ul li :is(a, button):active,
+.menuRodape ul li :is(a, button):focus {
+  outline: none;
+}
+
+.menuNavegacao ul li a:hover,
+.menuRodape ul li :is(a, button):hover {
+  background: var(--cor-branco-05);
+  color: var(--cor-preto-01);
+}
+
+.menuNavegacao ul li a:hover::before,
+.menuRodape ul li :is(a, button):hover::before {
+  width: 4px;
+  opacity: 1;
+  visibility: visible;
+}
+
+.menuNavegacao .itemAtivo a,
+.menuRodape .itemAtivo :is(a, button) {
+  background: var(--cor-branco-05);
+  color: var(--cor-preto-01);
+}
+
+.menuNavegacao .itemAtivo a::before,
+.menuRodape .itemAtivo :is(a, button)::before {
+  width: 4px;
+  opacity: 1;
+  visibility: visible;
+}
+
+.iconeNavegacao {
+  margin-right: 12px;
+}
+
+.menuRodape {
+  margin-top: auto;
+  padding-top: 30px;
+}
+
+.menuRodape button { font: inherit; text-align: left; width: 100%; background: transparent; }
