@@ -1,71 +1,37 @@
 # AgroSync
 
-Monitoramento agrícola com React, TypeScript, Vite, Firebase Authentication e Realtime Database. Integrantes: Diogo Vieira da Costa e Jean de Melo Prates.
+Trabalho de Conclusão de Curso do Ensino Médio Integrado ao Técnico em Desenvolvimento de Sistemas, apresentado à Etec de Hortolândia.
 
-## Executar
+**Autores:** Jean de Melo Prates e Diogo Vieira da Costa
 
-Use Node.js 22.12+ ou 24. Crie `.env.local` na raiz com os valores do seu projeto Firebase:
+## Descrição
 
-```dotenv
-VITE_FIREBASE_API_KEY=
-VITE_FIREBASE_AUTH_DOMAIN=
-VITE_FIREBASE_PROJECT_ID=
-VITE_FIREBASE_STORAGE_BUCKET=
-VITE_FIREBASE_MESSAGING_SENDER_ID=
-VITE_FIREBASE_APP_ID=
-VITE_FIREBASE_DATABASE_URL=
-VITE_FIREBASE_MEASUREMENTID=
-```
+Este repositório contém a aplicação web do AgroSync, sistema de monitoramento agrícola desenvolvido com React e Firebase. A aplicação permite que o usuário se cadastre, faça login e acompanhe, em um painel próprio, informações sobre suas plantações — como leituras de solo, alertas, relatórios e preferências de configuração.
 
-Confira os nomes em `src/firebase/FirebaseConexao.tsx`. Execute:
+## Estrutura da aplicação
 
-```sh
-npm install --legacy-peer-deps --package-lock=false
-npm run dev
-```
+A aplicação é organizada em páginas e componentes reutilizáveis, seguindo uma separação clara entre autenticação, layout geral e funcionalidades específicas do painel agrícola. As páginas públicas incluem a apresentação do sistema, a tela de login/cadastro, a seção "Sobre" e a página de dicas de cultivo. As páginas privadas, acessíveis apenas após login, reúnem o painel principal, alertas, relatórios, configurações e o perfil do usuário.
 
-As versões seguem o package.json do Cinefilia, com Recharts acrescentado para os gráficos do AgroSync. O parâmetro `--legacy-peer-deps` é necessário porque o exemplo declara @rolldown/plugin-babel 0.2.0, enquanto @vitejs/plugin-react 6.0.0 declara compatibilidade opcional com a série 0.1.7. Não há package-lock.json nesta entrega, seguindo a estrutura fornecida do professor.
+## Autenticação
 
-## Organização
-
-`main.tsx` renderiza FirebaseConexao e App. App envolve Rotas com AutenticacaoProvider e LayoutProvider. Rotas reúne BrowserRouter, Routes e Route. Principal compõe o menu e Outlet. RotaProtegida recebe children e redireciona visitantes sem sessão para `/`.
-
-```text
-src/
-  assets/imagens/
-  componentes/
-    layout/
-  contextos/
-  firebase/
-  hooks/
-  paginas/
-  rotas/
-  tipos/
-  App.tsx
-  main.tsx
-  global.css
-```
-
-Os componentes e as páginas usam funções nomeadas e CSS Modules importado como `estilos`; App usa export default. Os tipos de domínio ficam em tipos, e os hooks concentram acesso aos dados. As páginas, textos, imagens, gráficos e estilos agrícolas pertencem ao AgroSync.
-
-## Autenticação conforme Cinefilia
-
-Somente cadastro, login e logout. useAutenticacao expõe criarAutenticacaoUsuario, validarUsuario e deslogar, retornando Promise<string> com `sucesso` ou mensagem de erro. AutenticacaoContexto usa onAuthStateChanged e UsuarioTipo com codigo e email. Os formulários usam FormValues explícito, React Hook Form, Zod, dadosUsuario e ModalMensagem.
-
-O cadastro exige nome entre 2 e 25 caracteres e senha de exatamente 6 caracteres; ao fechar o modal, encerra a sessão e volta ao login, como no exemplo. O nome informado aparece na mensagem; o cadastro básico do professor não grava um perfil no Realtime Database. O perfil agrícola pode ser preenchido na página Perfil.
-
-Rotas públicas: `/`, `/usuario`, `/sobre`, `/dicas`. Rotas privadas: `/principal`, `/principal/alertas`, `/principal/relatorios`, `/principal/configuracoes`, `/principal/perfil`.
-
-FirebaseConexao reproduz o teste do exemplo com uma tentativa de login inválida e uma tela de conexão. Esse comportamento também foi mantido deliberadamente.
+O acesso à aplicação é feito por meio de cadastro e login simples, com uso do Firebase Authentication. Para o cadastro, é exigido um nome com entre 2 e 25 caracteres e uma senha de 6 caracteres. Ao concluir o cadastro, uma mensagem de confirmação é exibida e o usuário é direcionado novamente à tela de login.
 
 ## Dados agrícolas
 
-O backend é Firebase; não existe servidor Express nesta pasta. Os caminhos preservados são `usuarios/{codigo}`, `usuarios/{codigo}/configuracoes`, `sensores/solo/atual` e `sensores/solo/historico/{timestamp}`. codigo corresponde ao uid do Firebase. As permissões administrativas dos sensores dependem de `acessosSensores/{uid}`.
+As informações do sistema — dados de usuários, configurações e leituras dos sensores de solo (histórico e valores atuais) — são armazenadas no Firebase Realtime Database. O acesso às leituras dos sensores é controlado por permissões associadas a cada usuário.
 
-Cartões e gráficos mantêm a fonte estática da apresentação original. Alertas e relatórios usam o hook de dados reais; a variante simulada também foi mantida. CSV é gerado no navegador. Preferências de notificações não implementam envio de emails, e o intervalo configurado não programa o ESP32. Firmware e aplicativo mobile não foram fornecidos nesta pasta.
+Os cartões e gráficos apresentados no painel utilizam, nesta versão, dados de demonstração para fins de apresentação, com suporte também a dados reais quando disponíveis. É possível exportar relatórios em formato de planilha (CSV) diretamente pelo navegador.
 
-Os arquivos locais de Firebase CLI e regras foram retirados para seguir a estrutura solicitada. Isso não altera regras já publicadas. As regras fornecidas na base exigiam email verificado e não contemplavam configuracoes: precisam ser ajustadas no backend para permitir este fluxo, mantendo acesso restrito ao proprietário e as permissões dos sensores. Nenhuma regra remota foi publicada nesta refatoração.
+Vale destacar que, nesta etapa do projeto, o envio de notificações por e-mail e a comunicação direta com o hardware (ESP32) ainda não estão implementados nesta parte web; o firmware do dispositivo e o aplicativo mobile são desenvolvidos separadamente.
 
-## Como rodar os testes
+## Como executar o projeto
 
-Execute `npm run build` para compilar o projeto e `npm run lint` para checar o ESLint.
+É necessário ter o Node.js instalado (versão 22.12 ou superior) e configurar as credenciais do projeto Firebase em um arquivo de variáveis de ambiente antes de iniciar a aplicação. Após a configuração, as dependências são instaladas e o projeto é executado em ambiente de desenvolvimento por meio dos comandos padrão do gerenciador de pacotes.
+
+## Considerações finais
+
+Esta versão da aplicação web reflete o estágio atual de desenvolvimento do AgroSync, com a estrutura de autenticação, navegação e as principais telas do painel já implementadas. Ajustes nas regras de acesso ao banco de dados e a integração completa com os demais módulos do projeto (hardware e aplicativo mobile) permanecem como próximas etapas.
+
+---
+
+Projeto acadêmico desenvolvido para a Etec de Hortolândia — Centro Paula Souza, 2026.
