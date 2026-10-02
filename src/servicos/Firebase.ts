@@ -1,5 +1,6 @@
 import { initializeApp, FirebaseError, getApps, getApp } from 'firebase/app'
 import { initializeAuth, signInWithEmailAndPassword, inMemoryPersistence } from 'firebase/auth'
+import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -10,13 +11,12 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
 }
 
-// deve tenta inicializar o firebase de novo, senao trava com erro)
 const conexao = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig)
-
-//  vai lembrar quem está logado 
 
 const autenticacao = initializeAuth(conexao, {
   persistence: inMemoryPersistence
 })
 
-export { autenticacao, FirebaseError, signInWithEmailAndPassword }
+const firestore = getFirestore(conexao)
+
+export { autenticacao, firestore, FirebaseError, signInWithEmailAndPassword }

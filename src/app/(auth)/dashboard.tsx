@@ -6,6 +6,7 @@ import { Cores } from '@/constants/Cores'
 import { Fontes } from '@/constants/Fontes'
 import { useAutenticacao } from '@/hooks/useAuthenticacao'
 import { CabecalhoApp } from '@/components/CabecalhoApp'
+import { CartoesSensores } from '@/components/CartoesSensores'
 
 export default function dashboard() {
 
@@ -30,9 +31,7 @@ export default function dashboard() {
       <CabecalhoApp titulo="Dashboard" />
 
       <View style={estilos.centroConteudo}>
-        <Text style={estilos.placeholder}>
-          Dashboard em construção — aqui entrarão os dados de NPK, pH, umidade e temperatura.
-        </Text>
+        <CartoesSensores />
       </View>
     </SafeAreaView>
   )
