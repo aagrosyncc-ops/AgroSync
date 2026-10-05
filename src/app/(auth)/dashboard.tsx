@@ -53,8 +53,7 @@ const estilos = StyleSheet.create({
   centroConteudo: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24
+    padding: 10,
   },
 
   placeholder: {

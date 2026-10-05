@@ -65,7 +65,7 @@ export function CartoesSensores() {
       {/* card nitrogenio */}
       <View style={estilos.cartao}>
         <View style={estilos.cabecalhoCartao}>
-          <Text style={estilos.rotulo}>Nitrogênio (N)</Text>
+          <Text style={estilos.rotulo}>Nitrogênio</Text>
           <Text style={estilos.situacao}>
             {calcularStatus(leituraAtual.nitrogenio, FAIXA_NITROGENIO.min, FAIXA_NITROGENIO.max)}
           </Text>
@@ -80,7 +80,7 @@ export function CartoesSensores() {
       {/* card fosforo */}
       <View style={estilos.cartao}>
         <View style={estilos.cabecalhoCartao}>
-          <Text style={estilos.rotulo}>Fósforo (P)</Text>
+          <Text style={estilos.rotulo}>Fósforo</Text>
           <Text style={estilos.situacao}>
             {calcularStatus(leituraAtual.fosforo, FAIXA_FOSFORO.min, FAIXA_FOSFORO.max)}
           </Text>
@@ -95,7 +95,7 @@ export function CartoesSensores() {
       {/* card potassio */}
       <View style={estilos.cartao}>
         <View style={estilos.cabecalhoCartao}>
-          <Text style={estilos.rotulo}>Potássio (K)</Text>
+          <Text style={estilos.rotulo}>Potássio</Text>
           <Text style={estilos.situacao}>
             {calcularStatus(leituraAtual.potassio, FAIXA_POTASSIO.min, FAIXA_POTASSIO.max)}
           </Text>
@@ -140,7 +140,7 @@ export function CartoesSensores() {
       {/* card ph */}
       <View style={estilos.cartao}>
         <View style={estilos.cabecalhoCartao}>
-          <Text style={estilos.rotulo}>pH do Solo</Text>
+          <Text style={estilos.rotulo}>pH</Text>
           <Text style={estilos.situacao}>
             {calcularStatus(leituraAtual.ph, FAIXA_PH.min, FAIXA_PH.max)}
           </Text>
@@ -155,7 +155,7 @@ export function CartoesSensores() {
       {/* card condutividade */}
       <View style={estilos.cartao}>
         <View style={estilos.cabecalhoCartao}>
-          <Text style={estilos.rotulo}>Condutividade (EC)</Text>
+          <Text style={estilos.rotulo}>Condutividade</Text>
           <Text style={estilos.situacao}>
             {calcularStatus(leituraAtual.condutividade, FAIXA_CONDUTIVIDADE.min, FAIXA_CONDUTIVIDADE.max)}
           </Text>
@@ -188,14 +188,14 @@ export function CartoesSensores() {
 
 const estilos = StyleSheet.create({
   conteinerGrade: {
-    padding: 16,
-    gap: 12,
+    padding: 5,
+    gap: 10,
   },
   cartao: {
     backgroundColor: Cores.secundaria,
     borderRadius: 12,
-    padding: 16,
-    gap: 8,
+    padding: 10,
+    gap: -5,
   },
   cabecalhoCartao: {
     flexDirection: 'row',
@@ -214,7 +214,7 @@ const estilos = StyleSheet.create({
   },
   valor: {
     fontFamily: Fontes.baseBold,
-    fontSize: Fontes.grande1,
+    fontSize: Fontes.medio2,
     color: Cores.primariaEscura,
   },
   unidade: {
@@ -223,7 +223,7 @@ const estilos = StyleSheet.create({
     color: '#666',
   },
   barraFundo: {
-    height: 8,
+    height: 5,
     borderRadius: 4,
     backgroundColor: '#E0E0E0',
     overflow: 'hidden',
