@@ -1654,3 +1654,11 @@
 {"_e":"metro:bundling:progress","_t":1791054064158,"id":"2","progress":0.995900243468367,"total":1462,"current":1459}
 {"_e":"metro:bundling:progress","_t":1791054064259,"id":"2","progress":0.999,"total":1467,"current":1467}
 {"_e":"metro:bundling:done","_t":1791054064697,"id":"2","total":1467,"ms":26752.569885}
+{"_e":"root:init","_t":1791054873040,"format":"v0-jsonl","version":"57.0.25"}
+{"_e":"env:mode","_t":1791054873040,"nodeEnv":"development","babelEnv":"development","mode":"development"}
+{"_e":"env:load","_t":1791054873047,"mode":"development","files":["../../../.env"],"env":{"EXPO_PUBLIC_FIREBASE_API_KEY":"AIzaSyCD7b2LvVo6tgNBhoCqvMrI0DPk3qlTKG0","EXPO_PUBLIC_FIREBASE_APP_ID":"1:8515980600:web:b4ec418d3010fa955ec5cd","EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN":"agrosync-bcd81.firebaseapp.com","EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID":"8515980600","EXPO_PUBLIC_FIREBASE_PROJECT_ID":"agrosync-bcd81","EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET":"agrosync-bcd81.firebasestorage.app"}}
+{"_e":"devserver:start","_t":1791054874853,"mode":"development","web":true,"baseUrl":"","asyncRoutes":false,"routerRoot":"../../../src/app","serverComponents":false,"serverActions":false,"serverRendering":true,"apiRoutes":false,"exporting":false}
+{"_e":"metro:config","_t":1791054875335,"serverRoot":"../../..","projectRoot":"../../..","exporting":false,"flags":{"autolinkingModuleResolution":false,"serverActions":false,"serverComponents":false,"reactCompiler":true,"optimizeGraph":false,"treeshaking":false,"logbox":false}}
+{"_e":"metro:server_log","_t":1791054875513,"level":"error","data":["An unknown error occurred while installing React Native DevTools. Details:\n\n/workspaces/AgroSync/node_modules/@react-native/debugger-shell/bin/react-native-devtools: error while loading shared libraries: libatk-1.0.so.0: cannot open shared object file: No such file or directory\n"]}
+{"_e":"expo:dev-tools-plugin:load","_t":1791054875769,"plugins":[]}
+{"_e":"metro:instantiate","_t":1791054880386,"atlas":false,"workers":1,"host":"::","port":8081}

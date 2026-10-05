@@ -1,6 +1,6 @@
 import { initializeApp, FirebaseError, getApps, getApp } from 'firebase/app'
 import { initializeAuth, signInWithEmailAndPassword, inMemoryPersistence } from 'firebase/auth'
-import { initializeFirestore } from 'firebase/firestore'
+import { initializeFirestore, getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -17,8 +17,13 @@ const autenticacao = initializeAuth(conexao, {
   persistence: inMemoryPersistence
 })
 
-const firestore = initializeFirestore(conexao, {
-  experimentalForceLongPolling: true,
-})
+let firestore
+try {
+  firestore = initializeFirestore(conexao, {
+    experimentalForceLongPolling: true,
+  })
+} catch {
+  firestore = getFirestore(conexao)
+}
 
 export { autenticacao, firestore, FirebaseError, signInWithEmailAndPassword }
