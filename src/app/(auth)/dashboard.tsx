@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { router } from 'expo-router'
-import { Text, StyleSheet, View, ActivityIndicator } from 'react-native'
+import { StyleSheet, View, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Cores } from '@/constants/Cores'
 import { Fontes } from '@/constants/Fontes'
