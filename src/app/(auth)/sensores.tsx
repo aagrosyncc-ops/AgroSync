@@ -74,7 +74,7 @@ export default function sensores() {
 
             {!editando && (
               <Pressable onPress={abrirEdicao}>
-                <MaterialIcons name="edit" size={20} color={Cores.primariaEscura} />
+                <MaterialIcons name="edit" size={30} color={Cores.primariaEscura} />
               </Pressable>
             )}
           </View>

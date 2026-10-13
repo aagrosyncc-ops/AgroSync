@@ -43,19 +43,19 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
-        name="perfil"
+        name="alertas"
         options={{
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="person" size={Fontes.grande2} color={color} />
+            <MaterialIcons name="notifications" size={Fontes.grande2} color={color} />
           ),
         }}
       />
 
       <Tabs.Screen
-        name="alertas"
+        name="perfil"
         options={{
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="notifications" size={Fontes.grande2} color={color} />
+            <MaterialIcons name="person" size={Fontes.grande2} color={color} />
           ),
         }}
       />

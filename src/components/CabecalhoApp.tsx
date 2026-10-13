@@ -21,8 +21,6 @@ export function CabecalhoApp({ titulo }: CabecalhoAppProps) {
 
   const { usuarioContexto, deslogar, deslogarContexto } = useAutenticacao()
 
-  const inicial = (usuarioContexto?.nome || usuarioContexto?.email || '?').charAt(0).toUpperCase()
-
   const sairDaConta = async () => {
     await deslogar()
     await deslogarContexto()
@@ -40,7 +38,7 @@ export function CabecalhoApp({ titulo }: CabecalhoAppProps) {
 
         <View style={estilos.perfil}>
           <View style={estilos.avatar}>
-            <Text style={estilos.avatarTexto}>{inicial}</Text>
+            <MaterialIcons name="eco" size={24} color={Cores.secundariaClara} />
           </View>
 
           <View>
@@ -67,16 +65,16 @@ export function CabecalhoApp({ titulo }: CabecalhoAppProps) {
 const estilos = StyleSheet.create({
   topo: {
     paddingTop: 20,
-    paddingBottom: 10,
+    paddingBottom: 8,
     paddingHorizontal: 20,
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
     shadowColor: '#000',
-    shadowOpacity: 0.15,
+    shadowOpacity: 1.0,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
     elevation: 6,
-    gap: 20,
+    gap: 5,
   },
   topoLinha: {
     flexDirection: 'row',
@@ -96,11 +94,6 @@ const estilos = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  avatarTexto: {
-    fontFamily: Fontes.baseBold,
-    fontSize: Fontes.medio2,
-    color: Cores.secundariaClara,
-  },
   saudacao: {
     fontFamily: Fontes.baseRegular,
     fontSize: Fontes.pequeno,
@@ -116,8 +109,6 @@ const estilos = StyleSheet.create({
   botaoSair: {
     width: 40,
     height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.12)',
     justifyContent: 'center',
     alignItems: 'center',
   },
