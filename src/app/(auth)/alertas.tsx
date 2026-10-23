@@ -6,6 +6,7 @@ import { Cores } from '@/constants/Cores'
 import { Fontes } from '@/constants/Fontes'
 import { useAutenticacao } from '@/hooks/useAuthenticacao'
 import { CabecalhoApp } from '@/components/CabecalhoApp'
+import { ListaAlertas } from '@/components/ListaAlertas'
 
 export default function alertas() {
 
@@ -29,7 +30,7 @@ export default function alertas() {
     <SafeAreaView style={estilos.conteiner}>
       <CabecalhoApp titulo="Alertas" />
       <View style={estilos.centroConteudo}>
-        <Text style={estilos.placeholder}>Tela de Alertas - Em construção</Text>
+        <ListaAlertas />
       </View>
     </SafeAreaView>
   )
@@ -50,9 +51,6 @@ const estilos = StyleSheet.create({
 
   centroConteudo: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24
   },
 
   placeholder: {

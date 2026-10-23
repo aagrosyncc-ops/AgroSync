@@ -3,6 +3,7 @@ import { Stack } from 'expo-router'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { AutenticacaoProvider } from '@/contexto/AuthenticacaoContexto'
 import { useFonts } from 'expo-font'
+import { Cores } from '@/constants/Cores'
 
 export default function RootLayout() {
 
