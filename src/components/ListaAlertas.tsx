@@ -1,26 +1,32 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native'
 import { MaterialIcons } from '@react-native-vector-icons/material-icons'
 import { useDadosSensor } from '@/hooks/useDadosSensor'
-import { faixas_ideias } from '@/tipos/FaixasIdeais'
+import { FAIXAS_POR_CULTURA } from '@/tipos/FaixasIdeais'
+import { useCultura } from '@/hooks/useCultura'
 import { Cores } from '@/constants/Cores'
 import { Fontes } from '@/constants/Fontes'
 
-function obterFaixa(chave: string) {
-  return faixas_ideias.find((faixa) => faixa.chave === chave)!
-}
 
-const FAIXA_NITROGENIO = obterFaixa('nitrogenio')
-const FAIXA_FOSFORO = obterFaixa('fosforo')
-const FAIXA_POTASSIO = obterFaixa('potassio')
-const FAIXA_TEMPERATURA = obterFaixa('temperatura')
-const FAIXA_UMIDADE = obterFaixa('umidade')
-const FAIXA_PH = obterFaixa('ph')
-const FAIXA_CONDUTIVIDADE = obterFaixa('condutividade')
-const FAIXA_LUMINOSIDADE = obterFaixa('luminosidade')
 
 export function ListaAlertas() {
 
   const { leituraAtual, carregando, erro } = useDadosSensor()
+
+    const { cultura } = useCultura()
+  const faixas = FAIXAS_POR_CULTURA[cultura]
+
+  function obterFaixa(chave: string) {
+    return faixas.find((faixa) => faixa.chave === chave)!
+  }
+
+  const FAIXA_NITROGENIO = obterFaixa('nitrogenio')
+  const FAIXA_FOSFORO = obterFaixa('fosforo')
+  const FAIXA_POTASSIO = obterFaixa('potassio')
+  const FAIXA_TEMPERATURA = obterFaixa('temperatura')
+  const FAIXA_UMIDADE = obterFaixa('umidade')
+  const FAIXA_PH = obterFaixa('ph')
+  const FAIXA_CONDUTIVIDADE = obterFaixa('condutividade')
+  const FAIXA_LUMINOSIDADE = obterFaixa('luminosidade')
 
   if (carregando) {
     return <Text style={estilos.mensagemEstado}>Carregando alertas...</Text>
