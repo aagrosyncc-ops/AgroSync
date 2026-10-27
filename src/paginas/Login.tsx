@@ -117,8 +117,6 @@ export function Login(){
           <div className={estilos.conteinerFormulario}>
             <h2>Bem-vindo de volta</h2>
             <p className={estilos.subtitulo}>Entre com suas credenciais para acessar o dashboard</p>
-            {errors.email && <p role='alert'>{errors.email.message}</p>}
-            {errors.senha && <p role='alert'>{errors.senha.message}</p>}
             <form onSubmit={handleSubmit(autenticarUsuario)} className={estilos.formulario}>
               <div className={estilos.grupoCampos}>
                 <label htmlFor='email'>E-mail</label>
@@ -130,9 +128,9 @@ export function Login(){
                     autoComplete='email'
                     placeholder='seu@email.com'
                     {...register('email')}
-                    required
                   />
                 </div>
+                {errors.email && <p role='alert' className={estilos.erro}>{errors.email.message}</p>}
               </div>
 
               <div className={estilos.grupoCampos}>
@@ -145,9 +143,9 @@ export function Login(){
                     autoComplete='current-password'
                     placeholder='Sua senha'
                     {...register('senha')}
-                    required
                   />
                 </div>
+                {errors.senha && <p role='alert' className={estilos.erro}>{errors.senha.message}</p>}
               </div>
 
               <button type='submit' disabled={carregando} className={estilos.botaoEntrar}>
@@ -156,7 +154,7 @@ export function Login(){
             </form>
 
             <p className={estilos.cadastro}>
-              Não tem uma conta? <a onClick={novoUsuario}>Cadastre-se</a>
+              Não tem uma conta? <a role='button' tabIndex={0} onClick={novoUsuario} onKeyDown={(e) => e.key === 'Enter' && novoUsuario()}>Cadastre-se</a>
             </p>
           </div>
         </div>

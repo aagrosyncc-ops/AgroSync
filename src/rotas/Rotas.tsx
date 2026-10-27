@@ -7,8 +7,6 @@ import { Principal } from '../componentes/layout/Principal'
 import { Inicial } from '../paginas/Inicial'
 import { Alertas } from '../paginas/Alertas'
 import { Relatorios } from '../paginas/Relatorios'
-import { Configuracoes } from '../paginas/Configuracoes'
-import { Perfil } from '../paginas/Perfil'
 import { RotaProtegida } from './RotaProtegida'
 
 export function Rotas(){
@@ -24,8 +22,6 @@ export function Rotas(){
                     <Route index element={ <RotaProtegida><Inicial /></RotaProtegida> } />
                     <Route path='alertas' element={ <RotaProtegida><Alertas /></RotaProtegida> } />
                     <Route path='relatorios' element={ <RotaProtegida><Relatorios /></RotaProtegida> } />
-                    <Route path='configuracoes' element={ <RotaProtegida><Configuracoes /></RotaProtegida> } />
-                    <Route path='perfil' element={ <RotaProtegida><Perfil /></RotaProtegida> } />
                 </Route>
             </Routes>
         </BrowserRouter>

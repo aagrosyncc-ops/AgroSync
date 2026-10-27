@@ -296,7 +296,7 @@ export function Dicas() {
               </tr>
 
               <tr>
-                <td>Olimentão</td>
+                <td>Pimentão</td>
                 <td>5.8 - 6.8</td>
                 <td>18 - 28</td>
                 <td>60 - 80</td>

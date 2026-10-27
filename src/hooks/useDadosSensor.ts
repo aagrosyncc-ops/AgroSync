@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { collection, query, orderBy, limit, where, onSnapshot } from 'firebase/firestore'
 import { firestore } from '../firebase/FirebaseConexao'
 import type { LeituraSensorTipo, PontoHistoricoTipo, IntervaloTempoTipo } from '../tipos/Sensor'
@@ -6,20 +6,74 @@ import { INTERVALOS } from '../tipos/Sensor'
 
 const COLECAO_LEITURAS = 'leituras_sensor'
 
+// Teto de documentos lidos por consulta (protege site e cota do Firestore)
+const LIMITE_DOCUMENTOS = 5000
+// A tela só é redesenhada no máximo 1x a cada 30s, mesmo que o sensor envie a cada 5s
+const ATUALIZACAO_HISTORICO_MS = 30 * 1000
+
+// Se a última leitura for mais antiga que isso, o sensor é considerado desconectado.
+// Precisa ser MAIOR que o intervalo de envio do ESP32 (hoje 5s) com folga.
+// Se um dia aumentar o envio para 60s, suba para ~2 * 60 * 1000.
+export const LIMITE_SENSOR_OFFLINE_MS = 15 * 1000
+
+const CAMPOS_SENSOR = [
+  'nitrogenio', 'fosforo', 'potassio', 'temperatura',
+  'umidade', 'ph', 'condutividade', 'luminosidade',
+] as const
+
+// Converte o documento do Firestore em um ponto válido, ou null se for lixo de teste
+// (sem timestamp, timestamp em formato errado ou data impossível)
+function normalizarPonto(dados: Record<string, unknown>): PontoHistoricoTipo | null {
+  let ts: unknown = dados.timestamp
+  if (ts && typeof ts === 'object' && 'toMillis' in ts) {
+    ts = (ts as { toMillis: () => number }).toMillis() // caso tenha sido salvo como Timestamp
+  }
+  if (typeof ts !== 'number' || !Number.isFinite(ts) || ts < 1_600_000_000_000) return null
+
+  const ponto: Record<string, number> = { timestamp: ts }
+  let temAlgumCampo = false
+  for (const campo of CAMPOS_SENSOR) {
+    const valor = dados[campo]
+    if (typeof valor === 'number' && Number.isFinite(valor)) {
+      ponto[campo] = valor
+      temAlgumCampo = true
+    } else {
+      ponto[campo] = NaN
+    }
+  }
+  return temAlgumCampo ? (ponto as unknown as PontoHistoricoTipo) : null
+}
+
 type DadosSensorTipo = {
   leituraAtual: LeituraSensorTipo | null
+  sensorConectado: boolean
   historico: PontoHistoricoTipo[]
   carregando: boolean
   erro: string | null
 }
 
-export function useDadosSensor(intervalo: IntervaloTempoTipo = 'tudo'): DadosSensorTipo {
+/*
+  useDadosSensor()          -> só a leitura atual (cards, alertas). Leve.
+  useDadosSensor('1h')      -> leitura atual + histórico do intervalo (gráficos/relatórios).
+*/
+export function useDadosSensor(intervalo?: IntervaloTempoTipo): DadosSensorTipo {
   const [leituraAtual, setLeituraAtual] = useState<LeituraSensorTipo | null>(null)
   const [historico, setHistorico] = useState<PontoHistoricoTipo[]>([])
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState<string | null>(null)
+  const ultimaAtualizacao = useRef(0)
+  const [agora, setAgora] = useState(() => Date.now())
 
-  // Lê sempre o ultimo registro do nosso sensor npk do firestore
+  // Reavalia a cada 1s se o sensor ainda está enviando dados
+  useEffect(() => {
+    const relogio = setInterval(() => setAgora(Date.now()), 1000)
+    return () => clearInterval(relogio)
+  }, [])
+
+  const sensorConectado =
+    leituraAtual !== null && agora - leituraAtual.atualizadoEm <= LIMITE_SENSOR_OFFLINE_MS
+
+  // Último registro do sensor (1 documento só, atualiza em tempo real)
   useEffect(() => {
     const consultaAtual = query(
       collection(firestore, COLECAO_LEITURAS),
@@ -33,8 +87,8 @@ export function useDadosSensor(intervalo: IntervaloTempoTipo = 'tudo'): DadosSen
         if (snapshot.empty) {
           setLeituraAtual(null)
         } else {
-          const dados = snapshot.docs[0].data() as PontoHistoricoTipo
-          setLeituraAtual({ ...dados, atualizadoEm: dados.timestamp })
+          const dados = normalizarPonto(snapshot.docs[0].data())
+          setLeituraAtual(dados ? { ...dados, atualizadoEm: dados.timestamp } : null)
         }
         setCarregando(false)
       },
@@ -47,26 +101,61 @@ export function useDadosSensor(intervalo: IntervaloTempoTipo = 'tudo'): DadosSen
     return () => pararAtual()
   }, [])
 
-  // Histórico filtrado pelo intervalo escolhido (1h / 6h / 24h / 7d / tudo)
+  // Histórico: só é buscado quando um intervalo é pedido
   useEffect(() => {
-    const config = INTERVALOS.find((item) => item.valor === intervalo)
+    if (!intervalo) return
 
-    const consultaHistorico =
-      config && config.milissegundos !== null
+    const config = INTERVALOS.find((item) => item.valor === intervalo)
+    const duracao = config?.milissegundos ?? null
+
+    const consulta =
+      duracao !== null
         ? query(
             collection(firestore, COLECAO_LEITURAS),
-            where('timestamp', '>=', Date.now() - config.milissegundos),
-            orderBy('timestamp', 'asc'),
+            where('timestamp', '>=', Date.now() - duracao),
+            orderBy('timestamp', 'desc'),
+            limit(LIMITE_DOCUMENTOS),
           )
-        : query(collection(firestore, COLECAO_LEITURAS), orderBy('timestamp', 'asc'))
+        : query(
+            collection(firestore, COLECAO_LEITURAS),
+            orderBy('timestamp', 'desc'),
+            limit(LIMITE_DOCUMENTOS),
+          )
 
-    const pararHistorico = onSnapshot(consultaHistorico, (snapshot) => {
-      const lista = snapshot.docs.map((doc) => doc.data() as PontoHistoricoTipo)
-      setHistorico(lista)
-    })
+    let bruto: PontoHistoricoTipo[] = []
+    let temporizador: ReturnType<typeof setTimeout> | null = null
+    ultimaAtualizacao.current = 0
 
-    return () => pararHistorico()
+    const publicar = () => {
+      temporizador = null
+      ultimaAtualizacao.current = Date.now()
+      const corte = duracao !== null ? Date.now() - duracao : 0
+      // veio em ordem decrescente: filtra a janela móvel e inverte para crescente
+      setHistorico(bruto.filter((p) => p.timestamp >= corte).reverse())
+    }
+
+    const parar = onSnapshot(
+      consulta,
+      (snapshot) => {
+        bruto = snapshot.docs
+          .map((doc) => normalizarPonto(doc.data()))
+          .filter((p): p is PontoHistoricoTipo => p !== null)
+        const passou = Date.now() - ultimaAtualizacao.current
+        if (ultimaAtualizacao.current === 0 || passou >= ATUALIZACAO_HISTORICO_MS) {
+          if (temporizador) clearTimeout(temporizador)
+          publicar()
+        } else if (!temporizador) {
+          temporizador = setTimeout(publicar, ATUALIZACAO_HISTORICO_MS - passou)
+        }
+      },
+      (erroFirestore) => setErro(erroFirestore.message),
+    )
+
+    return () => {
+      parar()
+      if (temporizador) clearTimeout(temporizador)
+    }
   }, [intervalo])
 
-  return { leituraAtual, historico, carregando, erro }
+  return { leituraAtual, sensorConectado, historico, carregando, erro }
 }

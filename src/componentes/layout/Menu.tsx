@@ -88,18 +88,6 @@ export function Menu() {
                   Relatórios
                 </Link>
               </li>
-              <li className={location.pathname === '/principal/configuracoes' ? estilos.itemAtivo : ''}>
-                <Link to='configuracoes'>
-                  <span className={`icon-location-arrow ${estilos.iconeNavegacao}`}></span>
-                  Configurações
-                </Link>
-              </li>
-              <li className={location.pathname === '/principal/perfil' ? estilos.itemAtivo : ''}>
-                <Link to='perfil'>
-                  <span className={`icon-pie-chart ${estilos.iconeNavegacao}`}></span>
-                  Perfil
-                </Link>
-              </li>
             </ul>
           </nav>
 

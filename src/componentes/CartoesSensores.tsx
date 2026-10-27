@@ -27,7 +27,7 @@ function calcularPorcentagem(valor: number, min: number, max: number): number {
 }
 
 export function CartoesSensores() {
-  const { leituraAtual, carregando, erro } = useDadosSensor()
+  const { leituraAtual, sensorConectado, carregando, erro } = useDadosSensor()
   const { configuracoes } = useConfiguracoes()
 
   if (carregando) {
@@ -38,11 +38,11 @@ export function CartoesSensores() {
     return <p className={estilos.mensagemEstado}>Erro ao conectar ao sensor: {erro}</p>
   }
 
-  if (!leituraAtual) {
+  if (!sensorConectado || !leituraAtual) {
     return (
       <p className={estilos.mensagemEstado}>
-        Aguardando o sensor enviar dados. Verifique se o ESP32 está gravando leituras
-        na coleção "leituras_sensor" do Firestore.
+        Aguardando conexão do sensor... Os cards aparecem assim que ele estiver ligado e enviando
+        leituras.
       </p>
     )
   }
@@ -260,38 +260,6 @@ export function CartoesSensores() {
         </div>
         <p className={estilos.faixaIdeal}>
           Faixa ideal: {FAIXA_CONDUTIVIDADE.min} - {FAIXA_CONDUTIVIDADE.max} µS/cm
-        </p>
-      </div>
-
-      <div className={estilos.cartao}>
-        <div className={estilos.cabecalhoCartao}>
-          <div className={`${estilos.icone} ${estilos.icLuminosidade}`}>☀</div>
-          <span className={estilos.situacao}>
-            {calcularStatus(
-              leituraAtual.luminosidade,
-              FAIXA_LUMINOSIDADE.min,
-              FAIXA_LUMINOSIDADE.max,
-            )}
-          </span>
-        </div>
-        <p className={estilos.rotulo}>Luminosidade</p>
-        <p className={estilos.valor}>
-          {leituraAtual.luminosidade.toFixed(1)} <span className={estilos.unidade}>lux</span>
-        </p>
-        <div className={estilos.barraFundo}>
-          <div
-            className={`${estilos.barraPreenchida} ${estilos.corLuminosidade}`}
-            style={{
-              width: `${calcularPorcentagem(leituraAtual.luminosidade, FAIXA_LUMINOSIDADE.min, FAIXA_LUMINOSIDADE.max)}%`,
-            }}
-          />
-        </div>
-        <div className={estilos.limites}>
-          <span>{FAIXA_LUMINOSIDADE.min}lux</span>
-          <span>{FAIXA_LUMINOSIDADE.max}lux</span>
-        </div>
-        <p className={estilos.faixaIdeal}>
-          Faixa ideal: {FAIXA_LUMINOSIDADE.min} - {FAIXA_LUMINOSIDADE.max} lux
         </p>
       </div>
     </div>

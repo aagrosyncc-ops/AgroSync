@@ -60,6 +60,7 @@ export function Sobre() {
 
       <section className={estilos.destaque}>
         <div className={estilos.conteudoDestaque}>
+          <span className={estilos.etiqueta}><LuLeaf /> Agricultura inteligente</span>
           <h1 className={estilos.titulo}>Monitore a qualidade do solo da sua plantação</h1>
           <p className={estilos.subtitulo}>
             O Agro Sync oferece monitoramento inteligente em tempo real para plantações de pequeno e

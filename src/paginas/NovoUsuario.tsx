@@ -1,7 +1,8 @@
 import estilos from './NovoUsuario.module.css'
 import { Cabecalho } from '../componentes/layout/Cabecalho'
 import { Rodape } from '../componentes/layout/Rodape'
-import { FiMail, FiLock, FiLogIn, FiUser } from 'react-icons/fi'
+import { FiMail, FiLock, FiUserPlus, FiUser } from 'react-icons/fi'
+import { LuLeaf } from 'react-icons/lu'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
@@ -91,9 +92,25 @@ export function NovoUsuario(){
       <Cabecalho />
       <main className={estilos.conteudoPagina}>
     <div className={estilos.conteiner}>
+      <div className={estilos.cartao}>
+      <div className={estilos.lado}>
+        <div className={estilos.conteudoMarca}>
+          <div className={estilos.conteinerLogo}>
+            <LuLeaf className={estilos.logoIcone} />
+          </div>
+          <h1>Agro Sync</h1>
+          <p>Crie sua conta e comece a acompanhar a saúde do solo da sua plantação em minutos.</p>
+          <div className={estilos.listaRecursos}>
+            <div className={estilos.recurso}><span className={estilos.pontoRecurso} /><span>Monitoramento NPK em tempo real</span></div>
+            <div className={estilos.recurso}><span className={estilos.pontoRecurso} /><span>Alertas personalizados</span></div>
+            <div className={estilos.recurso}><span className={estilos.pontoRecurso} /><span>Relatórios detalhados</span></div>
+          </div>
+        </div>
+      </div>
       <div className={estilos.centro}>
         <form className={estilos.formulario} onSubmit={handleSubmit(adicionarUsuario)}>
-          <h2 className={estilos.tituloFormulario}>Não tem uma conta? Crie uma!</h2>
+          <h2 className={estilos.tituloFormulario}>Crie sua conta</h2>
+          <p className={estilos.formSubtitulo}>Preencha os dados abaixo para começar.</p>
 
           <div className={estilos.campo}>
             <label htmlFor='nome'>Nome</label>
@@ -139,17 +156,21 @@ export function NovoUsuario(){
                 {...register('senha')}
               />
             </div>
-            {errors.senha && <p className={estilos.erro}>{errors.senha.message}</p>}
+            {errors.senha ? <p className={estilos.erro}>{errors.senha.message}</p> : <p className={estilos.dica}>Use exatamente 6 caracteres.</p>}
           </div>
           <button
             type='submit'
             disabled={isSubmitting}
             className={estilos.botaoEntrar}
           >
-            <FiLogIn />
+            <FiUserPlus />
             <span>{isSubmitting ? 'Cadastrando...' : 'Cadastrar'}</span>
           </button>
+          <p className={estilos.jaTemConta}>
+            Já tem conta? <a role='button' tabIndex={0} onClick={() => navegacao('/')} onKeyDown={(e) => e.key === 'Enter' && navegacao('/')}>Entrar</a>
+          </p>
         </form>
+      </div>
       </div>
 
       <ModalMensagem

@@ -38,7 +38,7 @@ function formatarTempoRelativo(timestampMs: number): string {
 type Aba = 'todos' | 'critico' | 'atencao' | 'informacao'
 
 export function Alertas() {
-  const { leituraAtual, carregando } = useDadosSensor()
+  const { leituraAtual, sensorConectado, carregando } = useDadosSensor()
   const { configuracoes } = useConfiguracoes()
   const [aba, setAba] = useState<Aba>('todos')
   const [lidos, setLidos] = useState<Set<string>>(() => carregarLidos())
@@ -147,13 +147,13 @@ export function Alertas() {
     )
   }
 
-  if (!leituraAtual) {
+  if (!sensorConectado || !leituraAtual) {
     return (
       <div className={estilos.conteiner}>
         <h1 className={estilos.titulo}>Alertas</h1>
         <p className={estilos.mensagemEstado}>
-          Nenhuma leitura do sensor disponível ainda — assim que o ESP32 publicar dados, os alertas
-          aparecem aqui automaticamente.
+          Aguardando conexão do sensor... Os alertas aparecem assim que ele estiver ligado e
+          enviando leituras.
         </p>
       </div>
     )
