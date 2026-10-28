@@ -1,73 +1,87 @@
+import type { ComponentProps } from 'react'
 import { Tabs } from 'expo-router'
+import { View, StyleSheet } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { MaterialIcons } from '@react-native-vector-icons/material-icons'
-import { Cores } from '@/constants/Cores'
-import { Fontes } from '@/constants/Fontes'
+
+// Cores do menu (estilo Instagram escuro)
+const COR_FUNDO = '#16502d' // fundo da barra
+const COR_ICONE = '#FFFFFF' // ícones brancos
+const COR_PILULA = '#3d8b5f' // "pílula" cinza atrás do ícone ativo
+
+type IconeAbaProps = {
+  nome: ComponentProps<typeof MaterialIcons>['name']
+  focado: boolean
+}
+
+// Um ícone do menu: se estiver ativo, ganha a pílula atrás
+function IconeAba({ nome, focado }: IconeAbaProps) {
+  return (
+    <View style={[estilos.icone, focado && estilos.iconeAtivo]}>
+      <MaterialIcons name={nome} size={26} color={COR_ICONE} />
+    </View>
+  )
+}
 
 export default function TabsLayout() {
-
-  const insets = useSafeAreaInsets()
+  const insets = useSafeAreaInsets() // altura da barrinha do celular embaixo
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: Cores.primariaClara,
-        tabBarInactiveTintColor: Cores.secundariaClara,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
-          backgroundColor: Cores.primaria,
-          paddingBottom: insets.bottom || 16,
-          height: 55 + (insets.bottom || 0),
+          backgroundColor: COR_FUNDO,
           borderTopWidth: 0,
-          paddingTop: 10,
+          elevation: 0,
+          height: 56 + insets.bottom,
+          paddingTop: 8,
+          paddingBottom: insets.bottom,
         },
       }}
     >
       <Tabs.Screen
-        name="dashboard"
+        name='dashboard'
         options={{
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="dashboard" size={Fontes.grande2} color={color} />
-          ),
+          tabBarIcon: ({ focused }) => <IconeAba nome='dashboard' focado={focused} />,
         }}
       />
 
       <Tabs.Screen
-        name="sensores"
+        name='sensores'
         options={{
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="sensors" size={Fontes.grande2} color={color} />
-          ),
+          tabBarIcon: ({ focused }) => <IconeAba nome='sensors' focado={focused} />,
         }}
       />
 
       <Tabs.Screen
-        name="alertas"
+        name='alertas'
         options={{
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="notifications" size={Fontes.grande2} color={color} />
-          ),
+          tabBarIcon: ({ focused }) => <IconeAba nome='notifications' focado={focused} />,
         }}
       />
 
       <Tabs.Screen
-        name="perfil"
+        name='configuracoes'
         options={{
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="person" size={Fontes.grande2} color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="configuracoes"
-        options={{
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="settings" size={Fontes.grande2} color={color} />
-          ),
+          tabBarIcon: ({ focused }) => <IconeAba nome='settings' focado={focused} />,
         }}
       />
     </Tabs>
   )
 }
+
+const estilos = StyleSheet.create({
+  icone: {
+    width: 64,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconeAtivo: {
+    backgroundColor: COR_PILULA,
+  },
+})

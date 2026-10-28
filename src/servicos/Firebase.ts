@@ -1,5 +1,7 @@
 import { initializeApp, FirebaseError, getApps, getApp } from 'firebase/app'
-import { initializeAuth, signInWithEmailAndPassword, inMemoryPersistence } from 'firebase/auth'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+// @ts-ignore - getReactNativePersistence existe no pacote React Native do Firebase, mas o TypeScript do editor não reconhece esse tipo
+import { initializeAuth, signInWithEmailAndPassword, getReactNativePersistence } from 'firebase/auth'
 import { initializeFirestore, getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
@@ -14,7 +16,7 @@ const firebaseConfig = {
 const conexao = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig)
 
 const autenticacao = initializeAuth(conexao, {
-  persistence: inMemoryPersistence
+  persistence: getReactNativePersistence(AsyncStorage)
 })
 
 let firestore
