@@ -1,7 +1,5 @@
 import estilos from './CartoesSensores.module.css'
 import { useDadosSensor } from '../hooks/useDadosSensor'
-import { useConfiguracoes } from '../hooks/useConfiguracoes'
-import { celsiusParaFahrenheit } from '../tipos/Configuracoes'
 import { FAIXAS_IDEAIS } from '../tipos/FaixasIdeais'
 
 function obterFaixa(chave: string) {
@@ -28,7 +26,6 @@ function calcularPorcentagem(valor: number, min: number, max: number): number {
 
 export function CartoesSensores() {
   const { leituraAtual, sensorConectado, carregando, erro } = useDadosSensor()
-  const { configuracoes } = useConfiguracoes()
 
   if (carregando) {
     return <p className={estilos.mensagemEstado}>Carregando dados do sensor...</p>
@@ -47,17 +44,10 @@ export function CartoesSensores() {
     )
   }
 
-  const usaFahrenheit = configuracoes.unidadeTemperatura === 'fahrenheit'
-  const temperaturaExibida = usaFahrenheit
-    ? celsiusParaFahrenheit(leituraAtual.temperatura)
-    : leituraAtual.temperatura
-  const unidadeTemperatura = usaFahrenheit ? '°F' : '°C'
-  const faixaTemperaturaExibida = usaFahrenheit
-    ? {
-        min: celsiusParaFahrenheit(FAIXA_TEMPERATURA.min),
-        max: celsiusParaFahrenheit(FAIXA_TEMPERATURA.max),
-      }
-    : FAIXA_TEMPERATURA
+  // temperatura sempre em graus Celsius
+  const temperaturaExibida = leituraAtual.temperatura
+  const unidadeTemperatura = '°C'
+  const faixaTemperaturaExibida = FAIXA_TEMPERATURA
 
   return (
     <div className={estilos.conteinerGrade}>
@@ -260,6 +250,38 @@ export function CartoesSensores() {
         </div>
         <p className={estilos.faixaIdeal}>
           Faixa ideal: {FAIXA_CONDUTIVIDADE.min} - {FAIXA_CONDUTIVIDADE.max} µS/cm
+        </p>
+      </div>
+
+      <div className={estilos.cartao}>
+        <div className={estilos.cabecalhoCartao}>
+          <div className={`${estilos.icone} ${estilos.icLuminosidade}`}>☀</div>
+          <span className={estilos.situacao}>
+            {calcularStatus(
+              leituraAtual.luminosidade,
+              FAIXA_LUMINOSIDADE.min,
+              FAIXA_LUMINOSIDADE.max,
+            )}
+          </span>
+        </div>
+        <p className={estilos.rotulo}>Luminosidade</p>
+        <p className={estilos.valor}>
+          {leituraAtual.luminosidade.toFixed(1)} <span className={estilos.unidade}>lux</span>
+        </p>
+        <div className={estilos.barraFundo}>
+          <div
+            className={`${estilos.barraPreenchida} ${estilos.corLuminosidade}`}
+            style={{
+              width: `${calcularPorcentagem(leituraAtual.luminosidade, FAIXA_LUMINOSIDADE.min, FAIXA_LUMINOSIDADE.max)}%`,
+            }}
+          />
+        </div>
+        <div className={estilos.limites}>
+          <span>{FAIXA_LUMINOSIDADE.min}lux</span>
+          <span>{FAIXA_LUMINOSIDADE.max}lux</span>
+        </div>
+        <p className={estilos.faixaIdeal}>
+          Faixa ideal: {FAIXA_LUMINOSIDADE.min} - {FAIXA_LUMINOSIDADE.max} lux
         </p>
       </div>
     </div>

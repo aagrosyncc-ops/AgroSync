@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { collection, query, orderBy, limit, where, onSnapshot } from 'firebase/firestore'
+import { collection, query, orderBy, limit, where, onSnapshot, Timestamp } from 'firebase/firestore'
 import { firestore } from '../firebase/FirebaseConexao'
 import type { LeituraSensorTipo, PontoHistoricoTipo, IntervaloTempoTipo } from '../tipos/Sensor'
 import { INTERVALOS } from '../tipos/Sensor'
@@ -107,22 +107,35 @@ export function useDadosSensor(intervalo?: IntervaloTempoTipo): DadosSensorTipo 
 
     const config = INTERVALOS.find((item) => item.valor === intervalo)
     const duracao = config?.milissegundos ?? null
+    const colecao = collection(firestore, COLECAO_LEITURAS)
 
-    const consulta =
-      duracao !== null
-        ? query(
-            collection(firestore, COLECAO_LEITURAS),
-            where('timestamp', '>=', Date.now() - duracao),
-            orderBy('timestamp', 'desc'),
-            limit(LIMITE_DOCUMENTOS),
-          )
-        : query(
-            collection(firestore, COLECAO_LEITURAS),
-            orderBy('timestamp', 'desc'),
-            limit(LIMITE_DOCUMENTOS),
-          )
+    /*
+      O campo "timestamp" pode estar salvo de dois jeitos no Firestore: como NÚMERO
+      (milissegundos) ou como DATA (Timestamp). Um filtro por número NÃO enxerga
+      documentos salvos como data (e vice-versa). Por isso, nos intervalos com
+      filtro, rodamos uma consulta para cada tipo e juntamos o resultado.
+    */
+    const corteInicial = duracao !== null ? Date.now() - duracao : 0
+    const consultas =
+      duracao === null
+        ? [query(colecao, orderBy('timestamp', 'desc'), limit(LIMITE_DOCUMENTOS))]
+        : [
+            query(
+              colecao,
+              where('timestamp', '>=', Timestamp.fromMillis(corteInicial)),
+              orderBy('timestamp', 'desc'),
+              limit(LIMITE_DOCUMENTOS),
+            ),
+            query(
+              colecao,
+              where('timestamp', '>=', corteInicial),
+              orderBy('timestamp', 'desc'),
+              limit(LIMITE_DOCUMENTOS),
+            ),
+          ]
 
-    let bruto: PontoHistoricoTipo[] = []
+    const resultados: PontoHistoricoTipo[][] = consultas.map(() => [])
+    const recebeu: boolean[] = consultas.map(() => false)
     let temporizador: ReturnType<typeof setTimeout> | null = null
     ultimaAtualizacao.current = 0
 
@@ -130,29 +143,44 @@ export function useDadosSensor(intervalo?: IntervaloTempoTipo): DadosSensorTipo 
       temporizador = null
       ultimaAtualizacao.current = Date.now()
       const corte = duracao !== null ? Date.now() - duracao : 0
-      // veio em ordem decrescente: filtra a janela móvel e inverte para crescente
-      setHistorico(bruto.filter((p) => p.timestamp >= corte).reverse())
+      const juntos = resultados
+        .flat()
+        .filter((p) => p.timestamp >= corte)
+        .sort((x, y) => x.timestamp - y.timestamp)
+      setHistorico(juntos)
     }
 
-    const parar = onSnapshot(
-      consulta,
-      (snapshot) => {
-        bruto = snapshot.docs
-          .map((doc) => normalizarPonto(doc.data()))
-          .filter((p): p is PontoHistoricoTipo => p !== null)
-        const passou = Date.now() - ultimaAtualizacao.current
-        if (ultimaAtualizacao.current === 0 || passou >= ATUALIZACAO_HISTORICO_MS) {
-          if (temporizador) clearTimeout(temporizador)
-          publicar()
-        } else if (!temporizador) {
-          temporizador = setTimeout(publicar, ATUALIZACAO_HISTORICO_MS - passou)
-        }
-      },
-      (erroFirestore) => setErro(erroFirestore.message),
+    const aoReceber = () => {
+      // primeira exibição: espera TODAS as consultas responderem uma vez
+      if (ultimaAtualizacao.current === 0) {
+        if (recebeu.every(Boolean)) publicar()
+        return
+      }
+      const passou = Date.now() - ultimaAtualizacao.current
+      if (passou >= ATUALIZACAO_HISTORICO_MS) {
+        if (temporizador) clearTimeout(temporizador)
+        publicar()
+      } else if (!temporizador) {
+        temporizador = setTimeout(publicar, ATUALIZACAO_HISTORICO_MS - passou)
+      }
+    }
+
+    const parar = consultas.map((consulta, i) =>
+      onSnapshot(
+        consulta,
+        (snapshot) => {
+          resultados[i] = snapshot.docs
+            .map((doc) => normalizarPonto(doc.data()))
+            .filter((p): p is PontoHistoricoTipo => p !== null)
+          recebeu[i] = true
+          aoReceber()
+        },
+        (erroFirestore) => setErro(erroFirestore.message),
+      ),
     )
 
     return () => {
-      parar()
+      parar.forEach((cancelar) => cancelar())
       if (temporizador) clearTimeout(temporizador)
     }
   }, [intervalo])
