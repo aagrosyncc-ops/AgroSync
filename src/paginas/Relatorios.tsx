@@ -1,15 +1,11 @@
 import estilos from './Relatorios.module.css'
 import { type RelatorioGeradoTipo, type TipoRelatorio } from '../tipos/Relatorios'
 import { useState } from 'react'
-import { useDadosSensor } from '../hooks/useDadosSensor'
-import { FAIXAS_IDEAIS } from '../tipos/FaixasIdeais'
+import { collection, getDocs, query, where, orderBy, limit, Timestamp } from 'firebase/firestore'
+import { firestore } from '../firebase/FirebaseConexao'
+import { normalizarPonto } from '../hooks/useDadosSensor'
 import { type PontoHistoricoTipo } from '../tipos/Sensor'
-
-const DIAS_POR_TIPO: Record<TipoRelatorio, number> = {
-  diario: 1,
-  semanal: 7,
-  mensal: 30,
-}
+import { calcularRelatorio, inicioDoPeriodo } from '../utilitarios/relatorioDados'
 
 const ROTULO_TIPO: Record<TipoRelatorio, string> = {
   diario: 'Diário',
@@ -17,18 +13,25 @@ const ROTULO_TIPO: Record<TipoRelatorio, string> = {
   mensal: 'Mensal',
 }
 
+const LIMITE_LEITURAS = 10000 // o Firestore não aceita mais que 10.000 por consulta
 
+// Busca só as leituras do período do relatório (uma vez, ao clicar no botão).
+// Consulta os dois formatos possíveis do campo timestamp (data e número).
+async function buscarLeituras(inicioMs: number): Promise<PontoHistoricoTipo[]> {
+  const colecao = collection(firestore, 'leituras_sensor')
+  const [porData, porNumero] = await Promise.all([
+    getDocs(
+      query(colecao, where('timestamp', '>=', Timestamp.fromMillis(inicioMs)), orderBy('timestamp', 'desc'), limit(LIMITE_LEITURAS)),
+    ),
+    getDocs(
+      query(colecao, where('timestamp', '>=', inicioMs), orderBy('timestamp', 'desc'), limit(LIMITE_LEITURAS)),
+    ),
+  ])
 
-function montarCsv(historico: PontoHistoricoTipo[]): string {
-  const cabecalho = ['data_hora', ...FAIXAS_IDEAIS.map((f) => f.chave)].join(',')
-
-  const linhas = historico.map((ponto) => {
-    const dataHora = new Date(ponto.timestamp).toLocaleString('pt-BR')
-    const valores = FAIXAS_IDEAIS.map((f) => ponto[f.chave])
-    return [dataHora, ...valores].join(',')
-  })
-
-  return [cabecalho, ...linhas].join('\n')
+  return [...porData.docs, ...porNumero.docs]
+    .map((doc) => normalizarPonto(doc.data()))
+    .filter((ponto): ponto is PontoHistoricoTipo => ponto !== null)
+    .sort((x, y) => x.timestamp - y.timestamp)
 }
 
 function formatarTamanho(bytes: number): string {
@@ -38,47 +41,53 @@ function formatarTamanho(bytes: number): string {
 
 export function Relatorios() {
   const [tipoSelecionado, setTipoSelecionado] = useState<TipoRelatorio>('semanal')
-  const { historico, carregando } = useDadosSensor('tudo')
   const [relatorios, setRelatorios] = useState<RelatorioGeradoTipo[]>([])
   const [gerando, setGerando] = useState(false)
   const [mensagem, setMensagem] = useState('')
 
-  function gerarRelatorio() {
-    const diasCorte = DIAS_POR_TIPO[tipoSelecionado]
-    const corte = Date.now() - diasCorte * 24 * 60 * 60 * 1000
-    const dadosDoPeriodo = historico.filter((ponto) => ponto.timestamp >= corte)
-
-    if (dadosDoPeriodo.length === 0) {
-      setMensagem('Não há dados registrados nesse período ainda para gerar o relatório.')
-      return
-    }
-
+  async function gerarRelatorio() {
     setGerando(true)
     setMensagem('')
 
-    const csv = montarCsv(dadosDoPeriodo)
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
+    try {
+      const agora = Date.now()
+      const leituras = await buscarLeituras(inicioDoPeriodo(tipoSelecionado, agora))
+      const dadosRelatorio = calcularRelatorio(leituras, tipoSelecionado, agora)
 
-    const dataFormatada = new Date().toISOString().slice(0, 10)
-    const novoRelatorio: RelatorioGeradoTipo = {
-      id: `${Date.now()}`,
-      nome: `Relatório ${ROTULO_TIPO[tipoSelecionado]} - ${dataFormatada}`,
-      tipo: tipoSelecionado,
-      dataGeracao: Date.now(),
-      tamanhoBytes: blob.size,
-      url,
+      if (!dadosRelatorio) {
+        setMensagem('Não há dados registrados nesse período ainda para gerar o relatório.')
+        return
+      }
+
+      // o gerador de PDF só é carregado aqui, para não pesar o resto do site
+      const { gerarPdf } = await import('../utilitarios/relatorioPdf')
+      const blob = gerarPdf(dadosRelatorio)
+      const url = URL.createObjectURL(blob)
+
+      const dataFormatada = new Date().toISOString().slice(0, 10)
+      const novoRelatorio: RelatorioGeradoTipo = {
+        id: `${Date.now()}`,
+        nome: `Relatório ${ROTULO_TIPO[tipoSelecionado]} - ${dataFormatada}`,
+        tipo: tipoSelecionado,
+        dataGeracao: Date.now(),
+        tamanhoBytes: blob.size,
+        url,
+      }
+
+      setRelatorios((atual) => [novoRelatorio, ...atual])
+
+      // download automático
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `${novoRelatorio.nome}.pdf`
+      link.click()
+    } catch (erro) {
+      console.error(erro)
+      const detalhe = erro instanceof Error ? erro.message : String(erro)
+      setMensagem(`Não foi possível gerar o relatório. Motivo: ${detalhe}`)
+    } finally {
+      setGerando(false)
     }
-
-    setRelatorios((atual) => [novoRelatorio, ...atual])
-
-    //download
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `${novoRelatorio.nome}.csv`
-    link.click()
-
-    setGerando(false)
   }
 
   return (
@@ -115,13 +124,9 @@ export function Relatorios() {
         <button
           className={estilos.botaoGerar}
           onClick={gerarRelatorio}
-          disabled={carregando || gerando}
+          disabled={gerando}
         >
-          {carregando
-            ? 'Carregando dados do sensor...'
-            : gerando
-              ? 'Gerando...'
-              : `Gerar Relatório ${ROTULO_TIPO[tipoSelecionado]}`}
+          {gerando ? 'Gerando PDF...' : `Gerar Relatório ${ROTULO_TIPO[tipoSelecionado]}`}
         </button>
 
         {mensagem && <p className={estilos.mensagem}>{mensagem}</p>}
@@ -159,7 +164,7 @@ export function Relatorios() {
                   <td>
                     <a
                       href={relatorio.url}
-                      download={`${relatorio.nome}.csv`}
+                      download={`${relatorio.nome}.pdf`}
                       className={estilos.botaoBaixar}
                     >
                       Baixar

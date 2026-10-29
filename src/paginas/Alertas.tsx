@@ -3,7 +3,8 @@ import { type AlertaTipo } from '../tipos/Alertas'
 import { useEffect, useMemo, useState } from 'react'
 import { useDadosSensor } from '../hooks/useDadosSensor'
 import { useConfiguracoes } from '../hooks/useConfiguracoes'
-import { FAIXAS_IDEAIS, calcularSeveridade } from '../tipos/FaixasIdeais'
+import { calcularSeveridade } from '../tipos/FaixasIdeais'
+import { FAIXAS_RELATORIO } from '../utilitarios/relatorioDados'
 
 const CHAVE_LOCALSTORAGE_LIDOS = 'agrosync:alertas-lidos'
 
@@ -48,7 +49,8 @@ export function Alertas() {
 
     const lista: AlertaTipo[] = []
 
-    for (const faixa of FAIXAS_IDEAIS) {
+    // só os parâmetros que o sensor realmente mede (sem luminosidade)
+    for (const faixa of FAIXAS_RELATORIO) {
       const valor = leituraAtual[faixa.chave]
       const severidade = calcularSeveridade(valor, faixa)
 
@@ -85,15 +87,6 @@ export function Alertas() {
         quandoMs: leituraAtual.atualizadoEm,
       })
     }
-
-    lista.push({
-      id: 'info-ultima-leitura',
-      titulo: 'Última leitura do sensor',
-      descricao: `Dados atualizados ${formatarTempoRelativo(leituraAtual.atualizadoEm)}.`,
-      severidade: 'info',
-      categoria: 'informacao',
-      quandoMs: leituraAtual.atualizadoEm,
-    })
 
     return lista.sort((a, b) => b.quandoMs - a.quandoMs)
   }, [leituraAtual, configuracoes.alertasCriticos])

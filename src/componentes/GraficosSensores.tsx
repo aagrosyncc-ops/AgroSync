@@ -29,7 +29,6 @@ const GRAFICOS: { campo: CampoSensorTipo; titulo: string; cor: string; dominio?:
   { campo: 'umidade', titulo: 'Umidade', cor: '#14b8a6' },
   { campo: 'ph', titulo: 'pH do Solo', cor: '#a855f7', dominio: [0, 14] },
   { campo: 'condutividade', titulo: 'Condutividade Elétrica (EC)', cor: '#6366f1' },
-  { campo: 'luminosidade', titulo: 'Luminosidade', cor: '#eab308' },
 ]
 
 type GraficoLinhaProps = {

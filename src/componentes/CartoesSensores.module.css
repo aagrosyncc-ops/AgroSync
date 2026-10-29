@@ -159,3 +159,39 @@
   padding-top: 12px;
   margin: 0;
 }
+
+.cartaoOk {
+  border-left-color: var(--cor-verde-01);
+}
+.cartaoAtencao {
+  border-left-color: var(--cor-laranja-02);
+}
+.cartaoCritico {
+  border-left-color: var(--cor-vermelho-01);
+}
+
+/* selo "ÓTIMO / ATENÇÃO / CRÍTICO" */
+.situacaoOk {
+  color: var(--cor-verde-02);
+  background: var(--cor-verde-claro-01);
+}
+.situacaoAtencao {
+  color: var(--cor-laranja-03);
+  background: var(--cor-amarelo-claro-01);
+}
+.situacaoCritico {
+  color: var(--cor-vermelho-02);
+  background: var(--cor-vermelho-claro-01);
+}
+
+.icOk {
+  background-color: #16c765;
+}
+
+.icAtencao {
+  background-color: #ff9800;
+}
+
+.icCritico {
+  background-color: #ff4141;
+}

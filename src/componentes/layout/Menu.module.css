@@ -1,29 +1,42 @@
-.sobreposicao,
-.sobreposicaoVisivel {
-  display: none !important;
-}
+/* ==========================================================
+   MENU LATERAL AGROSYNC — estilo escuro (inspirado em dashboards modernos)
+   Para mudar as cores do menu, mexa só nas variáveis abaixo.
+   ========================================================== */
 
 .menuLateral {
+  /* cores do menu */
+  --menu-fundo: #0c4222;
+  --menu-linha: rgba(255, 255, 255, 0.1);
+  --menu-texto: #9db3a6;
+  --menu-texto-forte: #ffffff;
+  --menu-ico-fundo: rgba(255, 255, 255, 0.07);
+  --menu-ico-ativo: rgba(74, 222, 128, 0.2);
+  --menu-hover: rgba(255, 255, 255, 0.06);
+  --menu-ativo: rgba(255, 255, 255, 0.1);
+
   width: 300px;
   left: 0;
   top: 0;
   z-index: 1001;
   position: fixed;
   transform: translateX(0%) !important;
-  background-color: var(--cor-branco-01);
+  background-color: var(--menu-fundo);
 
   height: 100vh;
   min-height: 580px;
+}
+
+/* classes antigas do menu retrátil (mantidas desligadas, o código ainda usa os nomes) */
+.sobreposicao,
+.sobreposicaoVisivel {
+  display: none !important;
 }
 
 .menuLateralAberto {
   transform: translateX(0%);
 }
 
-.alternador {
-  display: none !important;
-}
-
+.alternador,
 .botaoMenu {
   display: none !important;
 }
@@ -36,56 +49,36 @@
   box-sizing: border-box;
 }
 
+/* ---------- Topo: nome do usuário ---------- */
 .perfil {
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-  margin-bottom: 30px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid var(--cor-branco-04);
-}
-
-.profileImg {
-  width: 80px;
-  display: block;
-  margin: 0 auto 20px auto;
-  border-radius: 50%;
+  margin: 0 28px 24px 28px;
+  padding-bottom: 24px;
+  text-align: left;
+  border-bottom: 1px solid var(--menu-linha);
 }
 
 .nomePerfil {
   font-size: var(--tamanho-18px);
-  margin-bottom: 0;
-  font-family: 'Roboto', sans-serif;
-  color: var(--cor-cinza-escuro-03);
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: var(--menu-texto-forte);
 }
 
 .identificacaoPerfil {
   font-size: var(--tamanho-14px);
-  color: var(--cor-cinza-claro-01);
+  color: var(--menu-texto);
 }
 
-.counter {
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  margin-bottom: 30px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid var(--cor-branco-04);
-}
-
-.counterCol {
-  flex: 1;
-}
-
-.number {
+/* ---------- Lista de páginas ---------- */
+.menuNavegacao::before {
+  content: 'NAVEGAÇÃO';
   display: block;
-  font-size: var(--tamanho-20px);
-  color: var(--cor-preto-01);
-}
-
-.numberLabel {
-  font-size: var(--tamanho-14px);
-  color: var(--cor-cinza-claro-01);
+  margin: 0 28px 10px 28px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--menu-texto);
+  opacity: 0.7;
 }
 
 .menuNavegacao ul,
@@ -97,31 +90,37 @@
   list-style: none;
 }
 
+/* cada item: ícone em quadradinho + texto */
 .menuNavegacao ul li a,
 .menuRodape ul li :is(a, button) {
-  display: block;
-  padding: 20px 30px;
-  color: var(--cor-cinza-04);
+  display: flex;
+  align-items: center;
   position: relative;
+  margin: 4px 16px;
+  padding: 10px 14px 10px 10px;
+  border-radius: 12px;
+  color: var(--menu-texto);
+  font-size: var(--tamanho-15px);
   text-decoration: none;
-  transition: 0.3s padding-left ease;
+  transition:
+    0.2s background-color ease,
+    0.2s color ease;
 }
 
-.menuNavegacao ul li a::before,
-.menuRodape ul li :is(a, button)::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 0;
-  background-color: var(--cor-laranja-04);
-  opacity: 0;
-  visibility: hidden;
+/* o quadradinho do ícone */
+.iconeNavegacao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  margin-right: 14px;
+  border-radius: 10px;
+  font-size: 18px;
+  background: var(--menu-ico-fundo);
   transition:
-    0.3s opacity ease,
-    0.3s visibility ease,
-    0.3s width ease;
+    0.2s background-color ease,
+    0.2s color ease;
 }
 
 .menuNavegacao ul li a:active,
@@ -131,39 +130,70 @@
   outline: none;
 }
 
+/* mouse em cima: só clareia o fundo (sem tracinho) */
 .menuNavegacao ul li a:hover,
 .menuRodape ul li :is(a, button):hover {
-  background: var(--cor-branco-05);
-  color: var(--cor-preto-01);
+  background: var(--menu-hover);
+  color: var(--menu-texto-forte);
 }
 
-.menuNavegacao ul li a:hover::before,
-.menuRodape ul li :is(a, button):hover::before {
+/* página atual: fundo destacado, texto branco, ícone verde claro e barra branca na borda */
+.menuNavegacao .itemAtivo a {
+  background: var(--menu-ativo);
+  color: var(--menu-texto-forte);
+  font-weight: 600;
+}
+
+.menuNavegacao .itemAtivo a .iconeNavegacao {
+  background: var(--menu-ico-ativo);
+  color: #4ade80;
+}
+
+.menuNavegacao ul li a::before {
+  content: '';
+  position: absolute;
+  left: -16px; /* cola na borda do menu, cancelando a margem do item */
+  top: 50%;
   width: 4px;
+  height: 28px;
+  border-radius: 0 4px 4px 0;
+  background: #ffffff;
+  opacity: 0;
+  transform: translateY(-50%) scaleY(0.4);
+  transition:
+    0.2s opacity ease,
+    0.2s transform ease;
+}
+
+.menuNavegacao .itemAtivo a::before {
   opacity: 1;
-  visibility: visible;
+  transform: translateY(-50%) scaleY(1);
 }
 
-.menuNavegacao .itemAtivo a,
-.menuRodape .itemAtivo :is(a, button) {
-  background: var(--cor-branco-05);
-  color: var(--cor-preto-01);
-}
-
-.menuNavegacao .itemAtivo a::before,
-.menuRodape .itemAtivo :is(a, button)::before {
-  width: 4px;
-  opacity: 1;
-  visibility: visible;
-}
-
-.iconeNavegacao {
-  margin-right: 12px;
-}
-
+/* ---------- Sair (sempre no pé do menu) ---------- */
 .menuRodape {
   margin-top: auto;
-  padding-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid var(--menu-linha);
+  margin-left: 16px;
+  margin-right: 16px;
 }
 
-.menuRodape button { font: inherit; text-align: left; width: 100%; background: transparent; }
+.menuRodape ul li :is(a, button) {
+  margin: 0;
+}
+
+.menuRodape button {
+  font: inherit;
+  font-size: var(--tamanho-15px);
+  text-align: left;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.menuRodape ul li button:hover .iconeNavegacao {
+  background: rgba(143, 15, 15, 0.808);
+  color: #f00000;
+}

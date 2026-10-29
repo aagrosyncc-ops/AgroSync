@@ -5,6 +5,7 @@ import { useAutenticacao } from '../../hooks/useAutenticacao'
 import { usePerfil } from '../../hooks/usePerfil'
 import React, { useState, useEffect, useRef, useContext } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { MdDashboard, MdNotifications, MdInsertChart, MdLogout } from 'react-icons/md'
 
 export function Menu() {
   const { deslogar } = useAutenticacao()
@@ -72,19 +73,19 @@ export function Menu() {
             <ul>
               <li className={location.pathname === '/principal' ? estilos.itemAtivo : ''}>
                 <Link to='/principal'>
-                  <span className={`icon-home ${estilos.iconeNavegacao}`}></span>
+                  <span className={estilos.iconeNavegacao}><MdDashboard /></span>
                   Painel
                 </Link>
               </li>
               <li className={location.pathname === '/principal/alertas' ? estilos.itemAtivo : ''}>
                 <Link to='alertas'>
-                  <span className={`icon-notifications ${estilos.iconeNavegacao}`}></span>
+                  <span className={estilos.iconeNavegacao}><MdNotifications /></span>
                   Alertas
                 </Link>
               </li>
               <li className={location.pathname === '/principal/relatorios' ? estilos.itemAtivo : ''}>
                 <Link to='relatorios'>
-                  <span className={`icon-search2 ${estilos.iconeNavegacao}`}></span>
+                  <span className={estilos.iconeNavegacao}><MdInsertChart /></span>
                   Relatórios
                 </Link>
               </li>
@@ -95,7 +96,7 @@ export function Menu() {
             <ul>
               <li>
                 <button onClick={sair}>
-                  <span className={`icon-sign-out ${estilos.iconeNavegacao}`}></span>
+                  <span className={estilos.iconeNavegacao}><MdLogout /></span>
                   Sair
                 </button>
               </li>

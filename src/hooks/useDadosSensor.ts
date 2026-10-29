@@ -23,7 +23,7 @@ const CAMPOS_SENSOR = [
 
 // Converte o documento do Firestore em um ponto válido, ou null se for lixo de teste
 // (sem timestamp, timestamp em formato errado ou data impossível)
-function normalizarPonto(dados: Record<string, unknown>): PontoHistoricoTipo | null {
+export function normalizarPonto(dados: Record<string, unknown>): PontoHistoricoTipo | null {
   let ts: unknown = dados.timestamp
   if (ts && typeof ts === 'object' && 'toMillis' in ts) {
     ts = (ts as { toMillis: () => number }).toMillis() // caso tenha sido salvo como Timestamp
