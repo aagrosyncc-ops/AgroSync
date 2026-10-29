@@ -33,7 +33,7 @@ export default function configuracoes() {
 
     return (
         <SafeAreaView style={estilos.conteiner}>
-            <CabecalhoApp titulo="Configuracoes" />
+            <CabecalhoApp titulo="Configurações" />
 
             <View style={estilos.centroConteudo}>
 

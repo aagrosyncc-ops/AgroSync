@@ -44,7 +44,7 @@ export function CartoesSensores() {
   const FAIXA_UMIDADE = obterFaixa('umidade')
   const FAIXA_PH = obterFaixa('ph')
   const FAIXA_CONDUTIVIDADE = obterFaixa('condutividade')
-  const FAIXA_LUMINOSIDADE = obterFaixa('luminosidade')
+ 
 
   if (carregando) {
     return <Text style={estilos.mensagemEstado}>Carregando dados do sensor...</Text>
@@ -169,21 +169,6 @@ export function CartoesSensores() {
           <View style={[estilos.barraPreenchida, { width: (calcularPorcentagem(leituraAtual.condutividade, FAIXA_CONDUTIVIDADE.min, FAIXA_CONDUTIVIDADE.max) + '%') as DimensionValue}]} />
         </View>
         <Text style={estilos.faixaIdeal}>Faixa ideal: {FAIXA_CONDUTIVIDADE.min} - {FAIXA_CONDUTIVIDADE.max} µS/cm</Text>
-      </View>
-
-      {/* card luminosidade */}
-      <View style={estilos.cartao}>
-        <View style={estilos.cabecalhoCartao}>
-          <Text style={estilos.rotulo}>Luminosidade</Text>
-          <Text style={estilos.situacao}>
-            {calcularStatus(leituraAtual.luminosidade, FAIXA_LUMINOSIDADE.min, FAIXA_LUMINOSIDADE.max)}
-          </Text>
-        </View>
-        <Text style={estilos.valor}>{leituraAtual.luminosidade.toFixed(1)} <Text style={estilos.unidade}>lux</Text></Text>
-        <View style={estilos.barraFundo}>
-          <View style={[estilos.barraPreenchida, { width: (calcularPorcentagem(leituraAtual.luminosidade, FAIXA_LUMINOSIDADE.min, FAIXA_LUMINOSIDADE.max) + '%') as DimensionValue}]} />
-        </View>
-        <Text style={estilos.faixaIdeal}>Faixa ideal: {FAIXA_LUMINOSIDADE.min} - {FAIXA_LUMINOSIDADE.max} lux</Text>
       </View>
 
     </ScrollView>

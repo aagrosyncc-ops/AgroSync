@@ -24,9 +24,19 @@ export function useDadosSensor() {
 
       if (snapshot.empty) {
         setLeituraAtual(null)
-      } else {
-        const dados = snapshot.docs[0].data() as LeituraSensorTipo
-        setLeituraAtual(dados)
+            } else {
+        const dados = snapshot.docs[0].data()
+
+        // o timestamp pode vir como Timestamp do Firestore (um objeto) ou como número puro.
+        // aqui a gente garante que vira sempre um número em milissegundos,
+        // pra o resto do app (Sensores, Alertas) não precisar se preocupar com isso
+        const timestampBruto: any = dados.timestamp
+        const timestampEmMs =
+          timestampBruto && typeof timestampBruto.toMillis === 'function'
+            ? timestampBruto.toMillis()
+            : timestampBruto
+
+        setLeituraAtual({ ...dados, timestamp: timestampEmMs } as LeituraSensorTipo)
       }
 
       setCarregando(false)
